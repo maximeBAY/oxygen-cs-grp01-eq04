@@ -3,17 +3,39 @@ import logging
 import requests
 import json
 import time
-
+import os
 
 class Main:
+    DEFAULT_HOST = 'http://34.95.34.5'
+    DEFAULT_DATABASE_HOST = 'TODO'
+    DEFAULT_DATABASE_PORT = 'TODO'
+    DEFAULT_T_MAX = 30
+    DEFAULT_T_MIN = 15
+    DEFAULT_TICKETS = 3
+
+    def __get_token_environnement_varable__(self):
+        if 'OXYGENCS_TOKEN' not in os.environ:
+            raise Exception(('ERREUR: TOKEN MANQUANT DANS LES VARIABLES DENVIRONNEMENT'))
+        else:
+            return os.environ['OXYGENCS_TOKEN']
+
+    def __get__environnement_variable__(self, varname, default_value):
+        if varname in os.environ:
+            return os.environ[varname]
+        else:
+            return default_value
+        
+
     def __init__(self):
         self._hub_connection = None
-        self.HOST = None  # Setup your host here
-        self.TOKEN = None  # Setup your token here
-        self.TICKETS = None  # Setup your tickets here
-        self.T_MAX = None  # Setup your max temperature here
-        self.T_MIN = None  # Setup your min temperature here
-        self.DATABASE = None  # Setup your database here
+        self.TOKEN = self.__get_token_environnement_varable__()
+        self.HOST = self.__get__environnement_variable__('OXYGENCS_HOST', self.DEFAULT_HOST)
+        self.TICKETS = self.__get__environnement_variable__('OXYGENCS_TICKETS', self.DEFAULT_TICKETS)
+        self.T_MAX = self.__get__environnement_variable__('OXYGENCS_T_MAX', self.DEFAULT_T_MAX)
+        self.T_MIN = self.__get__environnement_variable__('OXYGENCS_T_MIN', self.DEFAULT_T_MIN)
+        self.DATABASE_HOST = self.__get__environnement_variable__('OXYGENCS_DATABASE_HOST', self.DEFAULT_DATABASE_HOST)
+        self.DATABASE_PORT = self.__get__environnement_variable__('OXYGENCS_DATABASE_PORT', self.DEFAULT_DATABASE_PORT)
+        print(self.TOKEN, self.HOST, self.TICKETS, self.T_MAX, self.T_MIN, self.DATABASE_HOST, self.DATABASE_PORT)
 
     def __del__(self):
         if self._hub_connection != None:
@@ -56,7 +78,7 @@ class Main:
             print(data[0]["date"] + " --> " + data[0]["data"])
             date = data[0]["date"]
             dp = float(data[0]["data"])
-            self.send_temperature_to_fastapi(date, dp)
+            #self.send_temperature_to_fastapi(date, dp)
             self.analyzeDatapoint(date, dp)
         except Exception as err:
             print(err)
