@@ -31,15 +31,20 @@ FROM base AS runtime
 # Copy virtual env from python-deps stage
 COPY --from=python-deps /.venv /.venv
 ENV PATH="/.venv/bin:$PATH"
+
+# Create and switch to a new user
+RUN useradd --create-home appuser
+WORKDIR /home/appuser
+USER appuser
 ####################
 
 # Step 2: Copy project files
-COPY src /app/src/
-COPY Pipfile /app
-COPY Pipfile.lock /app
+COPY src /home/appuser/src/
+COPY Pipfile /home/appuser/
+COPY Pipfile.lock /home/appuser/
 
 # Step 3: Set the working directory
-WORKDIR /app
+#WORKDIR /app
 
 # Step 6: Run the application
 CMD ["pipenv", "run", "start"]
