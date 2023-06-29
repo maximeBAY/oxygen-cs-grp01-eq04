@@ -19,7 +19,7 @@ WORKDIR /app
 
 # Install dependencies
 RUN pip install pipenv
-RUN pipenv install --deploy
+RUN pipenv install --system --deploy
 
 # Step 2: Runtime stage
 FROM python:3.8-alpine

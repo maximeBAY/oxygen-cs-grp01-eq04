@@ -35,7 +35,7 @@ class Main:
         self.T_MIN = self.__get__environnement_variable__('OXYGENCS_T_MIN', self.DEFAULT_T_MIN)
         self.DATABASE_HOST = self.__get__environnement_variable__('OXYGENCS_DATABASE_HOST', self.DEFAULT_DATABASE_HOST)
         self.DATABASE_PORT = self.__get__environnement_variable__('OXYGENCS_DATABASE_PORT', self.DEFAULT_DATABASE_PORT)
-        print(self.TOKEN, self.HOST, self.TICKETS, self.T_MAX, self.T_MIN, self.DATABASE_HOST, self.DATABASE_PORT)
+        print(self.TOKEN, self.HOST, self.TICKETS, self.T_MAX, self.T_MIN, self.DATABASE_HOST, self.DATABASE_PORT, flush=True)
 
     def __del__(self):
         if self._hub_connection != None:
@@ -48,7 +48,7 @@ class Main:
         self.setup()
         self._hub_connection.start()
 
-        print("Press CTRL+C to exit.")
+        print("Press CTRL+C to exit.", flush=True)
         while True:
             time.sleep(2)
 
@@ -69,19 +69,19 @@ class Main:
         )
 
         self._hub_connection.on("ReceiveSensorData", self.onSensorDataReceived)
-        self._hub_connection.on_open(lambda: print("||| Connection opened."))
-        self._hub_connection.on_close(lambda: print("||| Connection closed."))
-        self._hub_connection.on_error(lambda data: print(f"||| An exception was thrown closed: {data.error}"))
+        self._hub_connection.on_open(lambda: print("||| Connection opened.", flush=True))
+        self._hub_connection.on_close(lambda: print("||| Connection closed.", flush=True))
+        self._hub_connection.on_error(lambda data: print(f"||| An exception was thrown closed: {data.error}", flush=True))
 
     def onSensorDataReceived(self, data):
         try:
-            print(data[0]["date"] + " --> " + data[0]["data"])
+            print(data[0]["date"] + " --> " + data[0]["data"], flush=True)
             date = data[0]["date"]
             dp = float(data[0]["data"])
             #self.send_temperature_to_fastapi(date, dp)
             self.analyzeDatapoint(date, dp)
         except Exception as err:
-            print(err)
+            print(err, flush=True)
 
     def analyzeDatapoint(self, date, data):
         if float(data) >= float(self.T_MAX):
@@ -92,7 +92,7 @@ class Main:
     def sendActionToHvac(self, date, action, nbTick):
         r = requests.get(f"{self.HOST}/api/hvac/{self.TOKEN}/{action}/{nbTick}")
         details = json.loads(r.text)
-        print(details)
+        print(details, flush=True)
 
     def send_event_to_database(self, timestamp, event):
         try:
