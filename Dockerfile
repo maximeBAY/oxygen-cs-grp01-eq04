@@ -23,7 +23,7 @@ RUN set -ex \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /media \ 
     && rm -rf /tmp \
-    && rm -rf /bin/busybox 
+    && rm /bin/busybox 
 
 # Step 5: Run the application
 CMD ["pipenv", "run", "start"]
