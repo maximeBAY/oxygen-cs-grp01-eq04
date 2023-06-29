@@ -1,5 +1,5 @@
 # Step 1: Build stage
-FROM python:3.8-slim-buster AS builder
+FROM python:3.8-alpine AS builder
 
 ENV OXYGENCS_HOST=http://34.95.34.5
 ENV OXYGENCS_TICKETS=3
@@ -27,7 +27,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Step 2: Runtime stage
-FROM python:3.8-slim-buster
+FROM python:3.8-alpine
 
 ENV OXYGENCS_HOST=http://34.95.34.5
 ENV OXYGENCS_TICKETS=3
