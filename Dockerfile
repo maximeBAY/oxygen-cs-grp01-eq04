@@ -8,8 +8,8 @@ COPY . /app
 WORKDIR /app
 
 # Step 5: Install dependencies during runtime
-CMD apt-get install pipenv
-CMD pipenv install
+CMD sudo pip install pipenv
+CMD pipenv install --system --deploy --ignore-pipfile
 
 # Step 6: Run the application
 CMD pipenv run start
