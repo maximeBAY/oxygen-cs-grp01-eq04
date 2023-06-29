@@ -6,6 +6,10 @@ ENV LC_ALL C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
 
+COPY src /app
+COPY Pipfile /app
+COPY Pipfile.lock /app
+
 
 FROM base AS python-deps
 
@@ -35,9 +39,9 @@ ENV PATH="/.venv/bin:$PATH"
 
 # Install application into container
 # Copy project files from the builder stage
-COPY --from=python-deps /app/src /app/src
-COPY --from=python-deps /app/Pipfile /app/Pipfile
-COPY --from=python-deps /app/Pipfile.lock /app/Pipfile.lock
+COPY --from=base /app/src /app/src
+COPY --from=base /app/Pipfile /app/Pipfile
+COPY --from=base /app/Pipfile.lock /app/Pipfile.lock
 
 WORKDIR /app
 
