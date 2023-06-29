@@ -1,5 +1,25 @@
-# Step 1: Build stage
-FROM python:3.8-alpine AS builder
+# using ubuntu LTS version
+FROM ubuntu:20.04 AS builder-image
+
+RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3.9-dev python3.9-venv python3-pip python3-wheel build-essential && \
+   apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# create and activate virtual environment
+RUN python3.9 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# install requirements
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+FROM ubuntu:20.04 AS runner-image
+RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3-venv && \
+   apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder-image /opt/venv /opt/venv
+COPY --from=builder-image /app/src /app/src
+COPY --from=builder-image /app/Pipfile /app/Pipfile
+COPY --from=builder-image /app/Pipfile.lock /app/Pipfile.lock
 
 ENV OXYGENCS_HOST=http://34.95.34.5
 ENV OXYGENCS_TICKETS=3
@@ -9,37 +29,11 @@ ENV OXYGENCS_DATABASE_HOST=
 ENV OXYGENCS_DATABASE_PORT=
 ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 
-# Copy project files
-COPY src /app/src/
-COPY Pipfile /app
-COPY Pipfile.lock /app
 
-# Set the working directory
-WORKDIR /app
+# activate virtual environment
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Install dependencies
-RUN pip install pipenv
-RUN pipenv install
-
-# Step 2: Runtime stage
-FROM python:3.8-alpine
-
-ENV OXYGENCS_HOST=http://34.95.34.5
-ENV OXYGENCS_TICKETS=3
-ENV OXYGENCS_T_MAX=30
-ENV OXYGENCS_T_MIN=15
-ENV OXYGENCS_DATABASE_HOST=
-ENV OXYGENCS_DATABASE_PORT=
-ENV OXYGENCS_TOKEN=liLAxrQ6Ed
-
-# Copy project files from the builder stage
-COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
-COPY --from=builder /usr/local/bin/pipenv /usr/local/bin/pipenv
-COPY --from=builder /app/src /app/src
-COPY --from=builder /app/Pipfile /app/Pipfile
-COPY --from=builder /app/Pipfile.lock /app/Pipfile.lock
-
-# Set the working directory
 WORKDIR /app
 
 
