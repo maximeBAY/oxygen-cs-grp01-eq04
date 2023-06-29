@@ -19,7 +19,7 @@ WORKDIR /app
 
 # Step 5: Install dependencies during runtime
 RUN pip install pipenv
-RUN pipenv install --system --deploy
+RUN pipenv install --deploy
 
 # Step 6: Run the application
 CMD ["pipenv", "run", "start"]
