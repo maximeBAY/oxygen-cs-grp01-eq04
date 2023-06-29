@@ -39,5 +39,11 @@ COPY --from=builder /app /app
 # Set the working directory
 WORKDIR /app
 
+# Install runtime dependencies
+RUN apk add --no-cache libpq
+
+# Set the PATH to include pipenv
+ENV PATH="/root/.local/bin:${PATH}"
+
 # Run the application
 CMD ["pipenv", "run", "start"]
