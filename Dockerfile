@@ -17,14 +17,10 @@ COPY Pipfile.lock /app
 # Set the working directory
 WORKDIR /app
 
-# Install build dependencies, pipenv, and cleanup
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential \
-    && pip install --no-cache-dir pipenv \
-    && pipenv install --deploy \
-    && apt-get remove -y build-essential \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+# Install dependencies
+RUN apk add --no-cache build-base && \
+    pip install --no-cache-dir pipenv && \
+    pipenv install --deploy
 
 # Step 2: Runtime stage
 FROM python:3.8-alpine
@@ -46,12 +42,9 @@ COPY --from=builder /app /app
 WORKDIR /app
 
 # Install runtime dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq-dev \
-    && pipenv install --deploy \
-    && apt-get remove -y libpq-dev \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache libpq
+RUN pipenv install --deploy
+
 
 # Run the application
 CMD ["pipenv", "run", "start"]
