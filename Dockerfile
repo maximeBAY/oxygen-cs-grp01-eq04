@@ -6,7 +6,7 @@ ENV LC_ALL C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
 
-COPY src /app
+COPY src /app/src
 COPY Pipfile /app
 COPY Pipfile.lock /app
 
@@ -19,6 +19,8 @@ RUN pip install pipenv
 # Install python dependencies in /.venv
 COPY Pipfile /app
 COPY Pipfile.lock /app
+COPY src /app/src
+
 WORKDIR /app
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
