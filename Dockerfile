@@ -18,9 +18,8 @@ COPY Pipfile.lock /app
 WORKDIR /app
 
 # Install dependencies
-RUN apk add --no-cache build-base && \
-    pip install pipenv && \
-    pipenv install --deploy
+RUN pip install pipenv
+RUN pipenv install
 
 # Step 2: Runtime stage
 FROM python:3.8-alpine
