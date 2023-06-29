@@ -2,7 +2,7 @@
 FROM python:3.8-alpine
 
 # Step 2: Copy project files
-COPY src /app
+COPY src /app/src/
 COPY Pipfile /app
 COPY Pipfile.lock /app
 
