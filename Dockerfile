@@ -20,7 +20,7 @@ WORKDIR /app
 # Install dependencies
 RUN apk add --no-cache build-base && \
     pip install --no-cache-dir pipenv && \
-    pipenv install --system --deploy
+    pipenv install --deploy
 
 # Step 2: Runtime stage
 FROM python:3.8-alpine
@@ -33,6 +33,7 @@ ENV OXYGENCS_DATABASE_HOST=
 ENV OXYGENCS_DATABASE_PORT=
 ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 RUN pip install pipenv
+RUN pipenv install --deploy
 
 # Copy project files from the builder stage
 COPY --from=builder /app /app
