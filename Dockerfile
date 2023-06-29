@@ -2,7 +2,7 @@
 FROM python:3.8-alpine
 
 # Step 2: Copy project files
-COPY . /app
+COPY src Pipfile Pipfile.lock /app/
 
 # Step 3: Set the working directory
 WORKDIR /app
