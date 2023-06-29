@@ -1,6 +1,9 @@
 # Step 1: Specify the base image
 FROM python:3.8-alpine as base
 
+# Install pipenv and compilation dependencies
+RUN pip install pipenv
+
 ENV OXYGENCS_HOST=http://34.95.34.5
 ENV OXYGENCS_TICKETS=3
 ENV OXYGENCS_T_MAX=30
@@ -17,9 +20,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONFAULTHANDLER 1
 
 FROM base AS python-deps
-
-# Install pipenv and compilation dependencies
-RUN pip install pipenv
 
 # Install python dependencies in /.venv
 COPY Pipfile .
