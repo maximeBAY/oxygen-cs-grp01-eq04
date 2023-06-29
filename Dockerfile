@@ -5,8 +5,8 @@ ENV OXYGENCS_HOST=http://34.95.34.5
 ENV OXYGENCS_TICKETS=3
 ENV OXYGENCS_T_MAX=30
 ENV OXYGENCS_T_MIN=15
-ENV OXYGENCS_DATABASE_HOST=
-ENV OXYGENCS_DATABASE_PORT=
+ENV OXYGENCS_DATABASE_HOST=TODO
+ENV OXYGENCS_DATABASE_PORT=TODO
 ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 
 # Step 2: Copy project files
@@ -19,11 +19,8 @@ WORKDIR /app
 
 # Step 4: Install dependencies
 RUN set -ex \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends gcc libc-dev \
     && pip install pipenv \
     && pipenv install \
-    && apt-get purge -y --auto-remove gcc libc-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Step 5: Run the application
