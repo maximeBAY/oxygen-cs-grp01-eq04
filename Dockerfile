@@ -8,7 +8,7 @@ COPY . /app
 WORKDIR /app
 
 # Step 5: Install dependencies during runtime
-CMD pip install pipenv
+CMD apt-get install pipenv
 CMD pipenv install
 
 # Step 6: Run the application
