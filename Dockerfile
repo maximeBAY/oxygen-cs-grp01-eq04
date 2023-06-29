@@ -11,4 +11,4 @@ WORKDIR /app
 pipenv install
 
 # Step 6: Run the application
-CMD python app.py
+CMD pipenv run start
