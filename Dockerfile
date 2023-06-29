@@ -12,6 +12,7 @@ ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 # Copy project files
 COPY src /app/src/
 COPY Pipfile /app
+COPY Pipfile.lock /app
 
 # Set the working directory
 WORKDIR /app
@@ -19,7 +20,7 @@ WORKDIR /app
 # Install dependencies
 RUN apk add --no-cache build-base && \
     pip install pipenv && \
-    pipenv install --deploy
+    pipenv install --deploy --system
 
 # Step 2: Runtime stage
 FROM python:3.8-alpine
@@ -36,13 +37,12 @@ ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 COPY --from=builder /usr/local/bin/pipenv /usr/local/bin/pipenv
 COPY --from=builder /app/src /app/src
-COPY --from=builder /app/Pipfile /app/Pipfile
+COPY --from=builder /app/PipFile /app/Pipefile
+COPY --from=builder /app/Pipfile.lock /app/Pipfile.lock
 
 # Set the working directory
 WORKDIR /app
 
-# Set the entry point
-ENTRYPOINT ["pipenv", "run"]
 
 # Run the application
-CMD ["python", "src/main.py"]
+CMD ["pipenv", "run","start"]
