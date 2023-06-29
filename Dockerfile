@@ -22,7 +22,7 @@ RUN set -ex \
     && apt-get update \
     && apt-get install -y --no-install-recommends gcc libc-dev \
     && pip install pipenv \
-    && pipenv install --system --deploy \
+    && pipenv install \
     && apt-get purge -y --auto-remove gcc libc-dev \
     && rm -rf /var/lib/apt/lists/*
 
