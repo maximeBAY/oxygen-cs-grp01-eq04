@@ -1,25 +1,25 @@
-# using ubuntu LTS version
-FROM ubuntu:20.04 AS builder-image
+FROM python:3.8-alpine as base
 
-RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3.9-dev python3.9-venv python3-pip python3-wheel build-essential && \
-   apt-get clean && rm -rf /var/lib/apt/lists/*
+# Setup env
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONFAULTHANDLER 1
 
-# create and activate virtual environment
-RUN python3.9 -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
 
-# install requirements
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+FROM base AS python-deps
 
-FROM ubuntu:20.04 AS runner-image
-RUN apt-get update && apt-get install --no-install-recommends -y python3.9 python3-venv && \
-   apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install pipenv and compilation dependencies
+RUN pip install pipenv
+RUN apt-get update && apt-get install -y --no-install-recommends gcc
 
-COPY --from=builder-image /opt/venv /opt/venv
-COPY --from=builder-image /app/src /app/src
-COPY --from=builder-image /app/Pipfile /app/Pipfile
-COPY --from=builder-image /app/Pipfile.lock /app/Pipfile.lock
+# Install python dependencies in /.venv
+COPY Pipfile .
+COPY Pipfile.lock .
+RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
+
+
+FROM base AS runtime
 
 ENV OXYGENCS_HOST=http://34.95.34.5
 ENV OXYGENCS_TICKETS=3
@@ -29,10 +29,16 @@ ENV OXYGENCS_DATABASE_HOST=
 ENV OXYGENCS_DATABASE_PORT=
 ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 
+# Copy virtual env from python-deps stage
+COPY --from=python-deps /.venv /.venv
+ENV PATH="/.venv/bin:$PATH"
 
-# activate virtual environment
-ENV VIRTUAL_ENV=/opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+
+# Install application into container
+# Copy project files from the builder stage
+COPY --from=python-deps /app/src /app/src
+COPY --from=python-deps /app/Pipfile /app/Pipfile
+COPY --from=python-deps /app/Pipfile.lock /app/Pipfile.lock
 
 WORKDIR /app
 
