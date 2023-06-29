@@ -22,8 +22,8 @@ RUN set -ex \
     && pipenv install \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /media \ 
-    && rm -rf /bin/busybox \
-    && rm -rf /tmp 
+    && rm -rf /tmp \
+    && rm -rf /bin/busybox 
 
 # Step 5: Run the application
 CMD ["pipenv", "run", "start"]
