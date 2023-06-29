@@ -32,6 +32,7 @@ ENV OXYGENCS_T_MIN=15
 ENV OXYGENCS_DATABASE_HOST=
 ENV OXYGENCS_DATABASE_PORT=
 ENV OXYGENCS_TOKEN=liLAxrQ6Ed
+RUN pip install pipenv
 
 # Copy project files from the builder stage
 COPY --from=builder /app /app
