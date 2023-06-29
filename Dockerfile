@@ -32,8 +32,8 @@ ENV OXYGENCS_T_MIN=15
 ENV OXYGENCS_DATABASE_HOST=
 ENV OXYGENCS_DATABASE_PORT=
 ENV OXYGENCS_TOKEN=liLAxrQ6Ed
+
 RUN pip install pipenv
-RUN pipenv install --deploy
 
 # Copy project files from the builder stage
 COPY --from=builder /app /app
@@ -43,6 +43,8 @@ WORKDIR /app
 
 # Install runtime dependencies
 RUN apk add --no-cache libpq
+RUN pipenv install --deploy
+
 
 # Run the application
 CMD ["pipenv", "run", "start"]
