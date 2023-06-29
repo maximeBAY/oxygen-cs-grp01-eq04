@@ -20,7 +20,7 @@ WORKDIR /app
 # Install dependencies
 RUN apk add --no-cache build-base && \
     pip install pipenv && \
-    pipenv lock --requirements > requirements.txt && \
+    pipenv lock --keep-outdated --requirements > requirements.txt && \
     pip install --no-cache-dir -r requirements.txt
 
 # Step 2: Runtime stage
