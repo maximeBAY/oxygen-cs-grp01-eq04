@@ -20,7 +20,7 @@ WORKDIR /app
 # Install dependencies
 RUN apk add --no-cache build-base && \
     pip install pipenv && \
-    pipenv install --system --deploy
+    pipenv install --deploy
 
 # Step 2: Runtime stage
 FROM python:3.8-alpine
