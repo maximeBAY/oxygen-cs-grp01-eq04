@@ -39,7 +39,7 @@ RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
 
-COPY --from=base /app/src /home/appuser/src
+COPY src /home/appuser/src
 COPY --from=base /app/Pipfile /home/appuser/Pipfile
 COPY --from=base /app/Pipfile.lock /home/appuser/Pipfile.lock
 
