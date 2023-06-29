@@ -17,8 +17,9 @@ FROM base AS python-deps
 RUN pip install pipenv
 
 # Install python dependencies in /.venv
-COPY Pipfile .
-COPY Pipfile.lock .
+COPY Pipfile /app
+COPY Pipfile.lock /app
+WORKDIR /app
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
 
@@ -33,9 +34,8 @@ ENV OXYGENCS_DATABASE_PORT=
 ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 
 # Copy virtual env from python-deps stage
-COPY --from=python-deps /.venv /.venv
-ENV PATH="/.venv/bin:$PATH"
-
+COPY --from=python-deps /app/.venv /app/.venv
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Install application into container
 # Copy project files from the builder stage
@@ -45,6 +45,5 @@ COPY --from=base /app/Pipfile.lock /app/Pipfile.lock
 
 WORKDIR /app
 
-
 # Run the application
-CMD ["pipenv", "run","start"]
+CMD ["pipenv", "run", "start"]
