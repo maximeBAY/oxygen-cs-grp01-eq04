@@ -1,5 +1,5 @@
 # Step 1: Build stage
-FROM python:3.8-alpine AS builder
+FROM python:3.8-slim-buster AS builder
 
 ENV OXYGENCS_HOST=http://34.95.34.5
 ENV OXYGENCS_TICKETS=3
@@ -17,13 +17,17 @@ COPY Pipfile.lock /app
 # Set the working directory
 WORKDIR /app
 
-# Install dependencies
-RUN apk add --no-cache build-base && \
-    pip install --no-cache-dir pipenv && \
-    pipenv install --deploy
+# Install build dependencies, pipenv, and cleanup
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential \
+    && pip install --no-cache-dir pipenv \
+    && pipenv install --deploy \
+    && apt-get remove -y build-essential \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
 # Step 2: Runtime stage
-FROM python:3.8-alpine
+FROM python:3.8-slim-buster
 
 ENV OXYGENCS_HOST=http://34.95.34.5
 ENV OXYGENCS_TICKETS=3
@@ -42,9 +46,12 @@ COPY --from=builder /app /app
 WORKDIR /app
 
 # Install runtime dependencies
-RUN apk add --no-cache libpq
-RUN pipenv install --deploy
-
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libpq-dev \
+    && pipenv install --deploy \
+    && apt-get remove -y libpq-dev \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
 # Run the application
 CMD ["pipenv", "run", "start"]
