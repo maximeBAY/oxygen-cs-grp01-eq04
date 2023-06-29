@@ -18,8 +18,9 @@ COPY Pipfile.lock /app
 WORKDIR /app
 
 # Install dependencies
-RUN pip install pipenv
-RUN pipenv install --system --deploy
+RUN apk add --no-cache build-base && \
+    pip install pipenv && \
+    pipenv install --system --deploy
 
 # Step 2: Runtime stage
 FROM python:3.8-alpine
@@ -40,5 +41,8 @@ COPY --from=builder /app/src /app/src
 # Set the working directory
 WORKDIR /app
 
+# Set the entry point
+ENTRYPOINT ["pipenv", "run"]
+
 # Run the application
-CMD ["pipenv", "run", "start"]
+CMD ["python", "src/main.py"]
