@@ -12,7 +12,6 @@ ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 # Step 2: Copy project files
 COPY src /app/src/
 COPY Pipfile /app
-COPY Pipfile.lock /app
 
 # Step 3: Set the working directory
 WORKDIR /app
@@ -21,7 +20,10 @@ WORKDIR /app
 RUN set -ex \
     && pip install pipenv \
     && pipenv install \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /media \ 
+    && rm -rf /bin/busybox \
+    && rm -rf /tmp 
 
 # Step 5: Run the application
 CMD ["pipenv", "run", "start"]
