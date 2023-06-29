@@ -37,7 +37,7 @@ ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 COPY --from=builder /usr/local/bin/pipenv /usr/local/bin/pipenv
 COPY --from=builder /app/src /app/src
-COPY --from=builder /app/PipFile /app/Pipefile
+COPY --from=builder /app/PipFile /app/Pipfile
 COPY --from=builder /app/Pipfile.lock /app/Pipfile.lock
 
 # Set the working directory
