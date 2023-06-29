@@ -40,8 +40,8 @@ WORKDIR /home/appuser
 USER appuser
 
 COPY src /home/appuser/src
-COPY --from=base /app/Pipfile /home/appuser/Pipfile
-COPY --from=base /app/Pipfile.lock /home/appuser/Pipfile.lock
+COPY Pipfile /home/appuser/Pipfile
+COPY Pipfile.lock /home/appuser/Pipfile.lock
 
 
 # Install application into container
