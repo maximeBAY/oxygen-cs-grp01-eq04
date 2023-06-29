@@ -20,7 +20,8 @@ WORKDIR /app
 # Install dependencies
 RUN apk add --no-cache build-base && \
     pip install pipenv && \
-    pipenv install --deploy --system
+    pipenv lock --requirements > requirements.txt && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Step 2: Runtime stage
 FROM python:3.8-alpine
@@ -41,9 +42,6 @@ WORKDIR /app
 
 # Install runtime dependencies
 RUN apk add --no-cache libpq
-
-# Set the PATH to include pipenv
-ENV PATH="/root/.local/bin:${PATH}"
 
 # Run the application
 CMD ["pipenv", "run", "start"]
