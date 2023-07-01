@@ -1,17 +1,12 @@
 from signalrcore.hub_connection_builder import HubConnectionBuilder
 import logging
 import requests
+import psycopg2
 import json
 import time
 import os
 
 class Main:
-    DEFAULT_HOST = 'http://34.95.34.5'
-    DEFAULT_DATABASE_HOST = 'TODO'
-    DEFAULT_DATABASE_PORT = 'TODO'
-    DEFAULT_T_MAX = 30
-    DEFAULT_T_MIN = 15
-    DEFAULT_TICKETS = 3
 
     def __get_token_environnement_varable__(self):
         if 'OXYGENCS_TOKEN' not in os.environ:
@@ -25,17 +20,26 @@ class Main:
         else:
             return default_value
         
-
     def __init__(self):
         self._hub_connection = None
         self.TOKEN = self.__get_token_environnement_varable__()
-        self.HOST = self.__get__environnement_variable__('OXYGENCS_HOST', self.DEFAULT_HOST)
-        self.TICKETS = self.__get__environnement_variable__('OXYGENCS_TICKETS', self.DEFAULT_TICKETS)
-        self.T_MAX = self.__get__environnement_variable__('OXYGENCS_T_MAX', self.DEFAULT_T_MAX)
-        self.T_MIN = self.__get__environnement_variable__('OXYGENCS_T_MIN', self.DEFAULT_T_MIN)
-        self.DATABASE_HOST = self.__get__environnement_variable__('OXYGENCS_DATABASE_HOST', self.DEFAULT_DATABASE_HOST)
-        self.DATABASE_PORT = self.__get__environnement_variable__('OXYGENCS_DATABASE_PORT', self.DEFAULT_DATABASE_PORT)
+        self.HOST = self.__get__environnement_variable__('OXYGENCS_HOST', "")
+        self.TICKETS = self.__get__environnement_variable__('OXYGENCS_TICKETS', 0)
+        self.T_MAX = self.__get__environnement_variable__('OXYGENCS_T_MAX', 0)
+        self.T_MIN = self.__get__environnement_variable__('OXYGENCS_T_MIN', 0)
+        self.DATABASE = self.__get__environnement_variable__('OXYGENCS_DATABASE', "")
+        self.DATABASE_HOST = self.__get__environnement_variable__('OXYGENCS_DATABASE_HOST', "")
+        self.DATABASE_PORT = self.__get__environnement_variable__('OXYGENCS_DATABASE_PORT', 0)
+        self.DATABASE_USERNAME = self.__get__environnement_variable__('OXYGENCS_DATABASE_USERNAME', "")
+        self.DATABASE_PASSWORD = self.__get__environnement_variable__('OXYGENCS_DATABASE_PASSWORD', "")
         print(self.TOKEN, self.HOST, self.TICKETS, self.T_MAX, self.T_MIN, self.DATABASE_HOST, self.DATABASE_PORT, flush=True)
+        
+        conn = self.database_connection()
+        cursor = conn.cursor()
+        cursor.execute("CREATE TABLE IF NOT EXISTS oxygencs_events (id SERIAL PRIMARY KEY, timestamp VARCHAR NOT NULL, event DECIMAL NOT NULL)")
+        conn.commit()
+        conn.close()
+        cursor.close()
 
     def __del__(self):
         if self._hub_connection != None:
@@ -78,6 +82,7 @@ class Main:
             print(data[0]["date"] + " --> " + data[0]["data"], flush=True)
             date = data[0]["date"]
             dp = float(data[0]["data"])
+            self.send_event_to_database(date, dp)
             #self.send_temperature_to_fastapi(date, dp)
             self.analyzeDatapoint(date, dp)
         except Exception as err:
@@ -96,12 +101,29 @@ class Main:
 
     def send_event_to_database(self, timestamp, event):
         try:
-            # To implement
-            pass
+            print("Inserting event into database", flush=True)
+            conn = self.database_connection()
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO oxygencs_events (timestamp, event)
+                VALUES (%s, %s);
+                """,
+                (timestamp, event))
+            conn.commit()
+            conn.close()
+            cursor.close()
         except requests.exceptions.RequestException as e:
-            # To implement
-            pass
-
+            print("Failed to insert event into database", flush=True)
+    
+    def database_connection(self):
+        conn = psycopg2.connect(
+            host = self.DATABASE_HOST,
+            port = self.DATABASE_PORT,
+            database = self.DATABASE,
+            user = self.DATABASE_USERNAME,
+            password = self.DATABASE_PASSWORD
+        )
+        return conn
 
 if __name__ == "__main__":
     main = Main()
