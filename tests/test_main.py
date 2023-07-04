@@ -1,4 +1,5 @@
 ## To Implement
+from src.main import Main
 
 def test_ok():
     assert True
