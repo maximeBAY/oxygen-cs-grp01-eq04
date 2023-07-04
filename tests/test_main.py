@@ -3,6 +3,22 @@ from src.main import Main
 import os
 import pytest
 
+#BEFORE TESTS:
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    os.environ['OXYGENCS_TOKEN'] = 'TEST_TOKEN'
+    os.environ['OXYGENCS_HOST'] = 'HOST'
+    os.environ['OXYGENCS_TICKETS'] = 1
+    os.environ['OXYGENCS_T_MAX'] = 99
+    os.environ['OXYGENCS_T_MIN'] = 1
+    os.environ['OXYGENCS_DATABASE'] = 'DB'
+    os.environ['OXYGENCS_DATABASE_HOST'] = 'DB HOST'
+    os.environ['OXYGENCS_DATABASE_PORT'] = 'DB PORT'
+    os.environ['OXYGENCS_DATABASE_USERNAME'] = 'DB USER'
+    os.environ['OXYGENCS_DATABASE_PASSWORD'] = 'DB PW'
+    yield
+    assert True
+
 def test_token_present():
     os.environ['OXYGENCS_TOKEN'] = 'TEST_TOKEN'
     main = Main()
