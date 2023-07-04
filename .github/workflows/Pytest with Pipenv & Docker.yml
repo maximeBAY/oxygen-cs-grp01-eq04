@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest 
     # runs within your Docker container
     container:
-      image: docker://${{ secrets.DOCKER_USERNAME }}/oxygen-cs-grp01-eq04:latest
+      image: docker://abder123alg/oxygen-cs-grp01-eq04:latest
     # checkout your code from your repository
     # and runs pytest in your pipenv environment
     steps:
