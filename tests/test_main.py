@@ -1,8 +1,8 @@
 ## To Implement
 from src.main import Main
 
-def ok():
+def test_ok():
     assert True
 
-def fail():
+def test_fail():
     assert False
