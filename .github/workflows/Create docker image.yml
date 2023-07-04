@@ -28,7 +28,7 @@ jobs:
         run: docker build . --file Dockerfile --tag oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }}
       
       - name: Run tests in Docker image
-        run: docker run oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }} poetry run pytest
+        run: docker run oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }} pipenv run pytest
 
       - name: Docker push
         env:
