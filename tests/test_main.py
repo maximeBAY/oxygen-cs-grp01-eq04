@@ -4,8 +4,9 @@ import os
 import pytest
 
 def test_token_present():
+    os.environ['OXYGENCS_TOKEN'] = 'TEST_TOKEN'
     main = Main()
-    assert main.TOKEN is not None
+    assert main.TOKEN == 'TEST_TOKEN'
 
 def test_token_missing():
     del os.environ['OXYGENCS_TOKEN']
