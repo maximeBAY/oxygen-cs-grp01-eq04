@@ -40,8 +40,10 @@ jobs:
     needs: build
     name: Pytest in Pipenv
     runs-on: ubuntu-latest 
+    env:
+      TAG: ${{ jobs.build.steps.date_tag.outputs.tag }}
     container:
-      image: abder123alg/oxygen-cs-grp01-eq04:"${{ jobs.build.steps.date_tag.outputs.tag }}"
+      image: abder123alg/oxygen-cs-grp01-eq04:$TAG
       credentials:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
