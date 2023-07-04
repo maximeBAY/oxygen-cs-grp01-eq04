@@ -44,8 +44,8 @@ jobs:
     container:
       image: abder123alg/oxygen-cs-grp01-eq04:latest
       credentials:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
     # checkout your code from your repository
     # and runs pytest in your pipenv environment
     steps:
