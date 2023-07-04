@@ -8,6 +8,20 @@ import os
 
 class Main:
 
+    DEFAULT_HOST = 'http://34.95.34.5'
+    DEFAULT_TICKETS = 3
+    DEFAULT_T_MAX = 30
+    DEFAULT_T_MIN = 15
+    DEFAULT_DATABASE_HOST = 'TODO'
+    DEFAULT_DATABASE_PORT = 'TODO'
+    DEFAULT_OXYGENCS_DATABASE="postgres"
+    DEFAULT_OXYGENCS_DATABASE_HOST="postgres_container"
+    DEFAULT_OXYGENCS_DATABASE_PORT=5432
+    DEFAULT_OXYGENCS_DATABASE_USERNAME="postgres"
+    DEFAULT_OXYGENCS_DATABASE_PASSWORD="postgres"
+    
+    
+
     def __get_token_environnement_varable__(self):
         if 'OXYGENCS_TOKEN' not in os.environ:
             raise Exception(('ERREUR: TOKEN MANQUANT DANS LES VARIABLES DENVIRONNEMENT'))
@@ -23,15 +37,15 @@ class Main:
     def __init__(self):
         self._hub_connection = None
         self.TOKEN = self.__get_token_environnement_varable__()
-        self.HOST = self.__get__environnement_variable__('OXYGENCS_HOST', "")
-        self.TICKETS = self.__get__environnement_variable__('OXYGENCS_TICKETS', 0)
-        self.T_MAX = self.__get__environnement_variable__('OXYGENCS_T_MAX', 0)
-        self.T_MIN = self.__get__environnement_variable__('OXYGENCS_T_MIN', 0)
-        self.DATABASE = self.__get__environnement_variable__('OXYGENCS_DATABASE', "")
-        self.DATABASE_HOST = self.__get__environnement_variable__('OXYGENCS_DATABASE_HOST', "")
-        self.DATABASE_PORT = self.__get__environnement_variable__('OXYGENCS_DATABASE_PORT', 0)
-        self.DATABASE_USERNAME = self.__get__environnement_variable__('OXYGENCS_DATABASE_USERNAME', "")
-        self.DATABASE_PASSWORD = self.__get__environnement_variable__('OXYGENCS_DATABASE_PASSWORD', "")
+        self.HOST = self.__get__environnement_variable__('OXYGENCS_HOST', self.DEFAULT_HOST)
+        self.TICKETS = self.__get__environnement_variable__('OXYGENCS_TICKETS', self.DEFAULT_TICKETS)
+        self.T_MAX = self.__get__environnement_variable__('OXYGENCS_T_MAX', self.DEFAULT_T_MAX)
+        self.T_MIN = self.__get__environnement_variable__('OXYGENCS_T_MIN', self.DEFAULT_T_MIN)
+        self.DATABASE = self.__get__environnement_variable__('OXYGENCS_DATABASE', self.DEFAULT_OXYGENCS_DATABASE)
+        self.DATABASE_HOST = self.__get__environnement_variable__('OXYGENCS_DATABASE_HOST', self.DEFAULT_DATABASE_HOST)
+        self.DATABASE_PORT = self.__get__environnement_variable__('OXYGENCS_DATABASE_PORT', self.DEFAULT_DATABASE_PORT)
+        self.DATABASE_USERNAME = self.__get__environnement_variable__('OXYGENCS_DATABASE_USERNAME', self.DEFAULT_OXYGENCS_DATABASE_USERNAME)
+        self.DATABASE_PASSWORD = self.__get__environnement_variable__('OXYGENCS_DATABASE_PASSWORD', self.DEFAULT_OXYGENCS_DATABASE_PASSWORD)
         print(self.TOKEN, self.HOST, self.TICKETS, self.T_MAX, self.T_MIN, self.DATABASE_HOST, self.DATABASE_PORT, flush=True)
         
         conn = self.database_connection()
