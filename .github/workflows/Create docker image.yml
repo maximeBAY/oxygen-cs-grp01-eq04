@@ -37,6 +37,7 @@ jobs:
           docker tag oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }} $DOCKER_USERNAME/oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }}
           docker push $DOCKER_USERNAME/oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }}
   test:
+    needs: build
     name: Pytest in Pipenv
     # runs on the latest Ubuntu
     runs-on: ubuntu-latest 
