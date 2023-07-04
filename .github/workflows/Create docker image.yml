@@ -43,10 +43,11 @@ jobs:
     env:
       TAG: ${{ needs.build.steps.date_tag.outputs.tag }}
     container:
-      image: abder123alg/oxygen-cs-grp01-eq04:$TAG
       credentials:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+      image: |
+        abder123alg/oxygen-cs-grp01-eq04:$TAG
     steps:
     - uses: actions/checkout@v3
     - name: Test with pytest
