@@ -14,7 +14,7 @@ ENV OXYGENCS_TOKEN=liLAxrQ6Ed
 
 # Copy project files
 COPY src /app/src/
-COPY src /app/tests/
+COPY tests /app/tests/
 COPY Pipfile /app
 COPY Pipfile.lock /app
 
