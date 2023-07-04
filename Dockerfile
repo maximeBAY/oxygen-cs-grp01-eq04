@@ -38,7 +38,7 @@ RUN pip install pipenv
 # Copy project files from the builder stage
 COPY --from=builder /app /app
 
-# Set the working directory
+# Set the working directoryy
 WORKDIR /app
 
 # Install runtime dependencies
