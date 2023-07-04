@@ -10,5 +10,6 @@ def test_token_present():
 
 def test_token_missing():
     del os.environ['OXYGENCS_TOKEN']
-    main = Main()
-    assert pytest.raises(Exception('ERREUR: TOKEN MANQUANT DANS LES VARIABLES DENVIRONNEMENT')) 
+    with pytest.raises(Exception) as excinfo:
+        main = Main()
+    assert "ERREUR: TOKEN MANQUANT DANS LES VARIABLES DENVIRONNEMENT" in str(excinfo)
