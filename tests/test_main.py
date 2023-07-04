@@ -8,9 +8,9 @@ import pytest
 def run_around_tests():
     os.environ['OXYGENCS_TOKEN'] = 'TEST_TOKEN'
     os.environ['OXYGENCS_HOST'] = 'HOST'
-    os.environ['OXYGENCS_TICKETS'] = 1
-    os.environ['OXYGENCS_T_MAX'] = 99
-    os.environ['OXYGENCS_T_MIN'] = 1
+    os.environ['OXYGENCS_TICKETS'] = '1'
+    os.environ['OXYGENCS_T_MAX'] = '99'
+    os.environ['OXYGENCS_T_MIN'] = '1'
     os.environ['OXYGENCS_DATABASE'] = 'DB'
     os.environ['OXYGENCS_DATABASE_HOST'] = 'DB HOST'
     os.environ['OXYGENCS_DATABASE_PORT'] = 'DB PORT'
