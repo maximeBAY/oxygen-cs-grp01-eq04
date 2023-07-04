@@ -24,7 +24,7 @@ class Main:
 
     def __get_token_environnement_varable__(self):
         if 'OXYGENCS_TOKEN' not in os.environ:
-            raise Exception(('ERREUR: TOKEN MANQUANT DANS LES VARIABLES DENVIRONNEMENT'))
+            raise Exception('ERREUR: TOKEN MANQUANT DANS LES VARIABLES DENVIRONNEMENT')
         else:
             return os.environ['OXYGENCS_TOKEN']
 
@@ -47,7 +47,12 @@ class Main:
         self.DATABASE_USERNAME = self.__get__environnement_variable__('OXYGENCS_DATABASE_USERNAME', self.DEFAULT_OXYGENCS_DATABASE_USERNAME)
         self.DATABASE_PASSWORD = self.__get__environnement_variable__('OXYGENCS_DATABASE_PASSWORD', self.DEFAULT_OXYGENCS_DATABASE_PASSWORD)
         print(self.TOKEN, self.HOST, self.TICKETS, self.T_MAX, self.T_MIN, self.DATABASE_HOST, self.DATABASE_PORT, flush=True)
-        
+
+    def __del__(self):
+        if self._hub_connection != None:
+            self._hub_connection.stop()
+
+    def __setup_database__(self):
         conn = self.database_connection()
         cursor = conn.cursor()
         cursor.execute("CREATE TABLE IF NOT EXISTS oxygencs_events (id SERIAL PRIMARY KEY, timestamp VARCHAR NOT NULL, event DECIMAL NOT NULL)")
@@ -55,12 +60,9 @@ class Main:
         conn.close()
         cursor.close()
 
-    def __del__(self):
-        if self._hub_connection != None:
-            self._hub_connection.stop()
-
     def setup(self):
         self.setSensorHub()
+        self.__setup_database__()
 
     def start(self):
         self.setup()
