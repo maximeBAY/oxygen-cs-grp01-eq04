@@ -34,21 +34,17 @@ jobs:
         run: |
           docker logout
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker tag oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }} $DOCKER_USERNAME/oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }}
+          docker tag oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }} $DOCKER_USERNAME/oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }} $DOCKER_USERNAME/oxygen-cs-grp01-eq04:latest
           docker push $DOCKER_USERNAME/oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }}
   test:
     needs: build
     name: Pytest in Pipenv
-    # runs on the latest Ubuntu
     runs-on: ubuntu-latest 
-    # runs within your Docker container
     container:
       image: abder123alg/oxygen-cs-grp01-eq04
       credentials:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    # checkout your code from your repository
-    # and runs pytest in your pipenv environment
     steps:
     - uses: actions/checkout@v3
     - name: Test with pytest
