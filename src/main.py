@@ -61,9 +61,9 @@ class Main:
         cursor.close()
 
     def setup(self):
-        self.setSensorHub()
         self.__setup_database__()
-
+        self.setSensorHub()
+    
     def start(self):
         self.setup()
         self._hub_connection.start()
