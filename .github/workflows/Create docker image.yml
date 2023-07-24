@@ -39,3 +39,22 @@ jobs:
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker tag oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }} $DOCKER_USERNAME/oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }}
           docker push $DOCKER_USERNAME/oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }}
+    
+      - name: Set docker image name in Kubernetes script
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["kubernetes/*.yaml"]'
+          tokenPrefix: __ # optional, default is #{
+          tokenSuffix: __ # optional, default is }#
+        env:
+          DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/oxygen-cs-grp01-eq04:${{ steps.date_tag.outputs.tag }}
+      
+      - name: Create Kubeconfig
+        run: |
+          mkdir ${HOME}/.kube
+          echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
+          cat ${HOME}/.kube/config
+      - name: Use context
+        run: kubectl config use-context gke_aesthetic-codex-388516_us-central1-c_log680-k8s
+      - name: Deploy to Kubernetes
+        run: kubectl apply -f kubernetes/oxygencs-kubernetes.yaml

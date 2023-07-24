@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oxygencs
+  labels:
+    app: oxygencs
+spec:
+  type: ClusterIP
+  selector:
+    app: oxygencs
+  ports:
+  - protocol: TCP
+    port: 5050
+    name: http
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oxygencs
+spec:
+  selector:
+    matchLabels:
+      app: oxygencs
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: oxygencs
+    spec:
+      containers:
+      - name: oxygencs
+        image: __DOCKER_IMAGE__
+        resources:
+          limits:
+            memory: "115Mi"
+            cpu: "115m"
+        
+        ports:
+        - containerPort: 5050
