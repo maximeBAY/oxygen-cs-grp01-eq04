@@ -15,7 +15,7 @@ class Main:
     DEFAULT_DATABASE_HOST = 'TODO'
     DEFAULT_DATABASE_PORT = 'TODO'
     DEFAULT_OXYGENCS_DATABASE="postgres"
-    DEFAULT_OXYGENCS_DATABASE_HOST="postgres_container"
+    DEFAULT_OXYGENCS_DATABASE_HOST="postgres"
     DEFAULT_OXYGENCS_DATABASE_PORT=5432
     DEFAULT_OXYGENCS_DATABASE_USERNAME="postgres"
     DEFAULT_OXYGENCS_DATABASE_PASSWORD="postgres"
@@ -122,7 +122,7 @@ class Main:
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO oxygencs_events (timestamp, event)
-                VALUES (%s, NOW());
+                VALUES (NOW(), %s);
                 """,
                 (event))
             conn.commit()
