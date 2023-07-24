@@ -12,11 +12,9 @@ class Main:
     DEFAULT_TICKETS = 3
     DEFAULT_T_MAX = 30
     DEFAULT_T_MIN = 15
-    DEFAULT_DATABASE_HOST = 'TODO'
-    DEFAULT_DATABASE_PORT = 'TODO'
+    DEFAULT_DATABASE_HOST = 'postgres'
+    DEFAULT_DATABASE_PORT =  5432
     DEFAULT_OXYGENCS_DATABASE="postgres"
-    DEFAULT_OXYGENCS_DATABASE_HOST="postgres"
-    DEFAULT_OXYGENCS_DATABASE_PORT=5432
     DEFAULT_OXYGENCS_DATABASE_USERNAME="postgres"
     DEFAULT_OXYGENCS_DATABASE_PASSWORD="postgres"
     
@@ -123,7 +121,7 @@ class Main:
             print(event, temperature)
             conn = self.database_connection()
             cursor = conn.cursor()
-            query = 'INSERT INTO oxygencs_events (event, temperature, timestamp) VALUES ("' + event + '", ' + str(temperature) + ', NOW());'
+            query = 'INSERT INTO oxygencs_events (event, temperature, timestamp) VALUES (\'' + event + '\', ' + str(temperature) + ', NOW());'
             print(query, flush=True)
             cursor.execute(query)
             conn.commit()
