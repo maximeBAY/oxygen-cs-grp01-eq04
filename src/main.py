@@ -55,7 +55,7 @@ class Main:
     def __setup_database__(self):
         conn = self.database_connection()
         cursor = conn.cursor()
-        cursor.execute("CREATE TABLE IF NOT EXISTS oxygencs_events (id SERIAL PRIMARY KEY, event VARCHAR NOT NULL, timestamp TIMESTAMP NOT NULL)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS oxygencs_events (id SERIAL PRIMARY KEY, event VARCHAR NOT NULL, temperature DECIMAL NOT NULL, timestamp TIMESTAMP NOT NULL)")
         conn.commit()
         conn.close()
         cursor.close()
@@ -97,34 +97,35 @@ class Main:
         try:
             print(data[0]["date"] + " --> " + data[0]["data"], flush=True)
             date = data[0]["date"]
-            dp = float(data[0]["data"])
-            self.send_event_to_database(date, dp)
-            #self.send_temperature_to_fastapi(date, dp)
-            self.analyzeDatapoint(date, dp)
+            temp = data[0]["data"]
+            self.analyzeDatapoint(date, temp)
         except Exception as err:
             print(err, flush=True)
 
     def analyzeDatapoint(self, date, data):
         if float(data) >= float(self.T_MAX):
             self.sendActionToHvac(date, "TurnOnAc", self.TICKETS)
+            event = "Activating AC for " + self.TICKETS + " ticks"
+            self.send_event_to_database(event, float(data))
         elif float(data) <= float(self.T_MIN):
             self.sendActionToHvac(date, "TurnOnHeater", self.TICKETS)
+            event = "Activating heater for " + self.TICKETS + " ticks"
+            self.send_event_to_database(event, float(data))
 
     def sendActionToHvac(self, date, action, nbTick):
         r = requests.get(f"{self.HOST}/api/hvac/{self.TOKEN}/{action}/{nbTick}")
         details = json.loads(r.text)
         print(details, flush=True)
 
-    def send_event_to_database(self, timestamp, event):
+    def send_event_to_database(self, event, temperature):
         try:
             print("Inserting event into database", flush=True)
+            print(event, temperature)
             conn = self.database_connection()
             cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO oxygencs_events (event, timestamp)
-                VALUES (%s, NOW());
-                """,
-                (str(event)))
+            query = 'INSERT INTO oxygencs_events (event, temperature, timestamp) VALUES ("' + event + '", ' + temperature + ', NOW());'
+            print(query, flush=True)
+            cursor.execute(query)
             conn.commit()
             conn.close()
             cursor.close()
