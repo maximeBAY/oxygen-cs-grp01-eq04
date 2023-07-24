@@ -123,7 +123,7 @@ class Main:
             print(event, temperature)
             conn = self.database_connection()
             cursor = conn.cursor()
-            query = 'INSERT INTO oxygencs_events (event, temperature, timestamp) VALUES ("' + event + '", ' + temperature + ', NOW());'
+            query = 'INSERT INTO oxygencs_events (event, temperature, timestamp) VALUES ("' + event + '", ' + str(temperature) + ', NOW());'
             print(query, flush=True)
             cursor.execute(query)
             conn.commit()
