@@ -55,7 +55,7 @@ class Main:
     def __setup_database__(self):
         conn = self.database_connection()
         cursor = conn.cursor()
-        cursor.execute("CREATE TABLE IF NOT EXISTS oxygencs_events (id SERIAL PRIMARY KEY, timestamp TIMESTAMP NOT NULL, event DECIMAL NOT NULL)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS oxygencs_events (id SERIAL PRIMARY KEY, event DECIMAL NOT NULL, timestamp TIMESTAMP NOT NULL)")
         conn.commit()
         conn.close()
         cursor.close()
@@ -121,8 +121,8 @@ class Main:
             conn = self.database_connection()
             cursor = conn.cursor()
             cursor.execute("""
-                INSERT INTO oxygencs_events (timestamp, event)
-                VALUES (NOW(), %s);
+                INSERT INTO oxygencs_events (event, timestamp)
+                VALUES (%s, NOW());
                 """,
                 (event))
             conn.commit()
