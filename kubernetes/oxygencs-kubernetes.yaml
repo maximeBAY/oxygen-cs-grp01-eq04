@@ -34,8 +34,8 @@ spec:
         image: __DOCKER_IMAGE__
         resources:
           limits:
-            memory: "115Mi"
-            cpu: "115m"
+            memory: "90Mi"
+            cpu: "90m"
         
         ports:
         - containerPort: 5050
